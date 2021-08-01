@@ -1,7 +1,14 @@
+import Post from "./Post";
 import "./Posts.css";
 
 const Posts = () => {
-  return <div className="posts">Posts</div>;
+  return (
+    <div className="posts">
+      <Post />
+      <Post />
+      <Post />
+    </div>
+  );
 };
 
 export default Posts;
