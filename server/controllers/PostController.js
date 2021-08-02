@@ -6,9 +6,19 @@ const blogPost = async (req, res) => {
     const savedPost = await post.save();
     res.status(200).json({ Post: savedPost });
   } catch (err) {
-    res.status(500).json("error occured");
-    console.log(err.message);
+    res.status(500).json({ message: err._message });
+    console.log(err._message);
   }
 };
 
-module.exports = { blogPost };
+const getPosts = async (req, res) => {
+  try {
+    const allPosts = await Post.find({});
+    res.status(200).json({ posts: allPosts });
+  } catch (err) {
+    res.status(500).json({ "error message ": err._message });
+    console.log(err._message);
+  }
+};
+
+module.exports = { blogPost, getPosts };
