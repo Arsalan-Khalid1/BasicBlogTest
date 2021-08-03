@@ -61,4 +61,61 @@ const register = async (req, res, next) => {
     .json({ userId: createdUser.id, email: createdUser.email, token: token });
 };
 
-module.exports = { register };
+const login = async (req, res, next) => {
+  const { email, password } = req.body;
+  let existingUser;
+
+  try {
+    existingUser = await User.findOne({ email: email });
+  } catch (err) {
+    res.status(500).json("Login failed please try again!");
+    return next();
+  }
+
+  if (!existingUser) {
+    res
+      .status(404)
+      .json("User doesn't exist please try again with correct credentials");
+    return next();
+  }
+
+  let invalidPwd;
+
+  try {
+    invalidPwd = await bcrypt.compare(password, existingUser.password);
+  } catch (err) {
+    res.status(500).json("Login failed please try again!");
+    return next();
+  }
+
+  if (!invalidPwd) {
+    res
+      .status(401)
+      .json("invalid password please try again with valid password");
+    return next();
+  }
+
+  let token;
+
+  try {
+    token = jwt.sign(
+      {
+        userId: existingUser.id,
+        email: existingUser.email,
+      },
+      "supersecret_private_tokengen_key",
+      { expiresIn: "1h" }
+    );
+  } catch (err) {
+    res.status(500).json("Login failed please try again");
+    return next();
+  }
+
+  res.json({
+    userId: existingUser.id,
+    email: existingUser.email,
+    token: token,
+  });
+};
+
+module.exports = { register, login };
