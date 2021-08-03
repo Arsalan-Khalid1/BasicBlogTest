@@ -3,6 +3,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
 const postRoutes = require("./routes/posts");
+const userRoutes = require("./routes/user");
 
 const app = express();
 
@@ -25,3 +26,4 @@ mongoose
   .catch((err) => console.log("could not connect to database"));
 
 app.use("/api/blogPost", postRoutes);
+app.use("/api/auth", userRoutes);
